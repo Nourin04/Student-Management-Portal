@@ -23,7 +23,7 @@ const ChatWidget = ({ onAction }) => {
       }
     }
     return [
-      { sender: 'ai', text: 'Hi, I\\'m Nova! I am your AI Assistant. You can ask me to add, find, or delete students!' }
+      { sender: 'ai', text: "Hi, I'm Nova! I am your AI Assistant. You can ask me to add, find, or delete students!" }
     ];
   });
 
@@ -94,7 +94,7 @@ const ChatWidget = ({ onAction }) => {
             </div>
             <div className="flex gap-3 items-center">
               <button 
-                onClick={() => setMessages([{ sender: 'ai', text: 'Hi, I\\'m Nova! I am your AI Assistant. You can ask me to add, find, or delete students!' }])} 
+                onClick={() => setMessages([{ sender: 'ai', text: "Hi, I'm Nova! I am your AI Assistant. You can ask me to add, find, or delete students!" }])} 
                 className="text-[10px] uppercase tracking-wider bg-indigo-700/50 px-2 py-1 rounded hover:bg-indigo-700 transition-colors"
                 title="Clear Chat"
               >
