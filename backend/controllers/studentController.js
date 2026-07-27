@@ -4,7 +4,12 @@ const Student = require('../models/Student');
 // @route   POST /students
 exports.createStudent = async (req, res) => {
   try {
-    const { studentId, name, age, subjects } = req.body;
+    let { studentId, name, age, subjects } = req.body;
+    
+    // Auto-generate studentId if not provided (e.g. STU123456)
+    if (!studentId) {
+      studentId = `STU${Date.now().toString().slice(-6)}`;
+    }
     
     // Check if student already exists
     const existingStudent = await Student.findOne({ studentId });

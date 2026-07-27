@@ -26,3 +26,8 @@ export const deleteStudent = async (id) => {
   const response = await axios.delete(`${API_URL}/${id}`);
   return response.data;
 };
+
+export const sendChatMessage = async (message, history = []) => {
+  const response = await axios.post('http://localhost:5002/chat', { message, history });
+  return response.data;
+};

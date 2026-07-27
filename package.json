@@ -1,0 +1,14 @@
+{
+  "name": "student-management-portal",
+  "version": "1.0.0",
+  "description": "Student Management Portal with AI Assistant",
+  "scripts": {
+    "start:backend": "cd backend && node server.js",
+    "start:frontend": "cd frontend && npm run dev",
+    "start:ai": "cd python-agent && source venv/bin/activate && python app.py",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\" \"npm run start:ai\" --kill-others --names \"BACKEND,FRONTEND,AI-AGENT\" --prefix-colors \"blue,magenta,cyan\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

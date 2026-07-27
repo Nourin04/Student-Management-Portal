@@ -107,7 +107,7 @@ const StudentModal = ({ isOpen, onClose, studentToEdit, onSuccess }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="name"
@@ -119,7 +119,7 @@ const StudentModal = ({ isOpen, onClose, studentToEdit, onSuccess }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Age <span className="text-red-500">*</span></label>
               <input
                 type="number"
                 name="age"
@@ -135,7 +135,7 @@ const StudentModal = ({ isOpen, onClose, studentToEdit, onSuccess }) => {
           </div>
 
           <div className="mb-2 flex items-center justify-between">
-            <label className="block text-sm font-medium text-gray-700">Subjects & Scores</label>
+            <label className="block text-sm font-medium text-gray-700">Subjects & Scores <span className="text-red-500">*</span></label>
             <button
               type="button"
               onClick={addSubject}

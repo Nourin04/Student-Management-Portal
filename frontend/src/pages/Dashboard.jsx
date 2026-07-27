@@ -3,6 +3,7 @@ import { Users, GraduationCap, AlertCircle, Search, Plus } from 'lucide-react';
 import { getStudents, deleteStudent } from '../services/api';
 import toast from 'react-hot-toast';
 import StudentModal from '../components/StudentModal';
+import ChatWidget from '../components/ChatWidget';
 import { formatName, formatSubject } from '../lib/utils';
 
 const Dashboard = () => {
@@ -12,6 +13,7 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [studentToDelete, setStudentToDelete] = useState(null);
+  const [highlightedRow, setHighlightedRow] = useState(null);
 
   const fetchStudents = async () => {
     setIsLoading(true);
@@ -42,6 +44,16 @@ const Dashboard = () => {
         toast.error('Failed to delete student.');
       }
       setStudentToDelete(null);
+    }
+  };
+
+  const handleChatAction = (action) => {
+    if (action.type === 'REFRESH_TABLE') {
+      fetchStudents();
+    } else if (action.type === 'HIGHLIGHT_ROW') {
+      setSearch(''); // Clear search to ensure we can see it
+      setHighlightedRow(action.id);
+      setTimeout(() => setHighlightedRow(null), 4000); // Highlight for 4 seconds
     }
   };
 
@@ -147,7 +159,10 @@ const Dashboard = () => {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {students.map((student) => (
-                  <tr key={student._id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr 
+                    key={student._id} 
+                    className={`transition-colors duration-500 ${highlightedRow === student.studentId ? 'bg-purple-100 ring-2 ring-purple-400' : 'hover:bg-gray-50/50'}`}
+                  >
                     <td className="px-6 py-4 font-medium text-gray-900">{student.studentId}</td>
                     <td className="px-6 py-4">{formatName(student.name)}</td>
                     <td className="px-6 py-4 text-gray-500">{student.age}</td>
@@ -216,6 +231,9 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+      {/* AI Floating Chat */}
+      <ChatWidget onAction={handleChatAction} />
     </div>
   );
 };
