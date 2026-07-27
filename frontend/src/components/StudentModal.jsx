@@ -80,8 +80,8 @@ const StudentModal = ({ isOpen, onClose, studentToEdit, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-[2px]">
-      <div className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-xl animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/20" style={{ height: '100dvh' }}>
+      <div className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-xl font-semibold text-gray-900">
             {studentToEdit ? 'Edit Student' : 'Add New Student'}
@@ -134,18 +134,11 @@ const StudentModal = ({ isOpen, onClose, studentToEdit, onSuccess }) => {
             </div>
           </div>
 
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-2">
             <label className="block text-sm font-medium text-gray-700">Subjects & Scores <span className="text-red-500">*</span></label>
-            <button
-              type="button"
-              onClick={addSubject}
-              className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center gap-1"
-            >
-              <Plus size={16} /> Add Subject
-            </button>
           </div>
           
-          <div className="space-y-3 mb-8 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-3 mb-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
             {formData.subjects.map((subject, index) => (
               <div key={index} className="flex gap-4 items-start bg-gray-50 p-4 rounded-xl border border-gray-100">
                 <div className="flex-1">
@@ -181,6 +174,15 @@ const StudentModal = ({ isOpen, onClose, studentToEdit, onSuccess }) => {
                 )}
               </div>
             ))}
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={addSubject}
+                className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center gap-1 mb-4"
+              >
+                <Plus size={16} /> Add Subject
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
