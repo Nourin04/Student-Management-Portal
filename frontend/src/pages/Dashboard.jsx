@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, GraduationCap, AlertCircle, Search, Plus } from 'lucide-react';
+import { Users, GraduationCap, AlertCircle, Search, Plus, Pencil, Trash2 } from 'lucide-react';
 import { getStudents, deleteStudent } from '../services/api';
 import toast from 'react-hot-toast';
 import StudentModal from '../components/StudentModal';
@@ -188,8 +188,12 @@ const Dashboard = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button onClick={() => openEditModal(student)} className="text-indigo-600 hover:text-indigo-900 font-medium mr-4">Edit</button>
-                      <button onClick={() => setStudentToDelete(student.studentId)} className="text-rose-600 hover:text-rose-900 font-medium">Delete</button>
+                      <button onClick={() => openEditModal(student)} className="text-indigo-600 hover:text-indigo-900 font-medium mr-4 inline-flex items-center gap-1">
+                        <Pencil size={16} /> Edit
+                      </button>
+                      <button onClick={() => setStudentToDelete(student.studentId)} className="text-rose-600 hover:text-rose-900 font-medium inline-flex items-center gap-1">
+                        <Trash2 size={16} /> Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
