@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5001/students';
+// Use environment variables for production, fallback to localhost for development
+const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5001/students';
 
 export const getStudents = async (search = '') => {
   const response = await axios.get(`${API_URL}?search=${search}`);
@@ -28,6 +29,7 @@ export const deleteStudent = async (id) => {
 };
 
 export const sendChatMessage = async (message, history = []) => {
-  const response = await axios.post('http://localhost:5002/chat', { message, history });
+  const aiUrl = import.meta.env.VITE_AI_URL || 'http://localhost:5002/chat';
+  const response = await axios.post(aiUrl, { message, history });
   return response.data;
 };
