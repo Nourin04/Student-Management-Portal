@@ -148,57 +148,39 @@ turnipseed-task/
 
 ## User Flow
 
-1. **User opens dashboard**: The React application mounts and initializes.
-2. **Dashboard loads statistics**: The frontend requests aggregated data to display high-level metrics.
-3. **Student list fetched**: A `GET /students` request fetches the current roster from MongoDB.
-4. **Search / Filter**: Users can instantly filter the roster locally or via the backend.
-5. **Add Student**: User fills out the modal form.
-6. **Backend validation**: Express validates the incoming payload (checking age ranges, score limits, required fields).
-7. **MongoDB**: The valid document is saved to the cluster.
-8. **Dashboard updates**: The frontend pushes the new student to local state, avoiding a full page reload.
-9. **Toast notification**: A success message briefly appears on the screen.
-10. **AI Assistant**: The user opens the chat widget and types: *"Add John, age 20, Math 95"*.
-11. **Natural language**: The message is sent to the Flask Agent.
-12. **Intent extraction**: The LLM extracts the intent (`ADD_STUDENT`) and structures the data into JSON.
-13. **REST API**: The Flask app automatically makes the POST request to the Express backend.
-14. **MongoDB**: Data is saved.
-15. **Response**: The LLM translates the raw JSON success response into conversational text, and the UI dynamically refreshes.
+1. The React frontend loads the dashboard and fetches student data from the Express API.
+2. Users can search, add, update, or delete student records through the UI.
+3. The Express backend validates all incoming data and performs academic calculations (average, grade, pass/fail).
+4. Valid records are stored in MongoDB Atlas.
+5. The frontend updates automatically and displays success/error notifications.
+6. For AI interactions, the user's message is sent to the Flask AI Agent.
+7. The LLM extracts the user's intent, invokes the appropriate REST API, and retrieves the result.
+8. The AI converts the API response into a conversational reply, and the UI refreshes accordingly.
 
 ---
 
 ## MERN Features Implementation
 
-- **Student CRUD**: Handled via standard HTTP methods (GET, POST, PUT, DELETE) on the Express router.
-- **Search**: Implemented using a combination of local state filtering and backend query string matching.
-- **Statistics Dashboard**: Dynamically reduces state arrays to compute averages, top scores, and total counts.
-- **Average Calculation**: Backend middleware calculates the mean of all subject scores before saving to the DB.
-- **Grade Calculation**: A switch-case logic block assigns A, B, C, D, or F based on the computed average.
-- **Pass/Fail Logic**: A boolean flag (`isPass`) is set to true if the average is >= 40.
-- **Responsive UI**: Custom CSS media queries ensure the grid layout collapses elegantly on smaller screens.
-- **Modern Component Design**: Modularized React components (`StudentModal`, `ChatWidget`, `StatCard`).
-- **API Integration**: Abstracted `api.js` service file to handle all `fetch`/`axios` calls cleanly.
-- **State Management**: Handled via React Hooks (`useState`, `useEffect`) avoiding overly complex Redux boilerplate for a targeted app.
-- **Loading States**: Skeletons and spinners provide immediate feedback during async operations.
-- **Toast Notifications**: Integrated `react-hot-toast` for global success/error messaging.
-- **Delete Confirmation**: UI safeguards to prevent accidental data loss.
+- RESTful CRUD operations implemented using Express routes.
+- Dynamic search using backend queries and client-side filtering.
+- Automatic academic calculations (average, grade, pass/fail) performed on the backend.
+- Responsive React UI built with reusable components.
+- React Hooks (`useState`, `useEffect`) for state management.
+- Centralized API integration through a dedicated service layer.
+- Loading indicators, toast notifications, and delete confirmations for improved UX.
 
 ---
 
 ## Form Validation
 
-Validation is implemented strictly on both the Client (for UX) and the Server (for security).
+Validation is implemented on both the client (UX) and server (security).
 
-- **Student ID Uniqueness**: The backend checks MongoDB for existing IDs before insertion.
-- **Required Fields**: Name, Age, and at least one subject are strictly required.
-- **Proper Name Capitalization**: Sanitization ensures names are formatted cleanly.
-- **Age Validation**: Rejects unrealistic age inputs (e.g., negative numbers).
-- **Score Validation**: Subject scores are clamped between `0` and `100`.
-- **Subject Validation**: Prevents empty subject names.
-- **Duplicate Prevention**: Handles MongoDB `E11000` duplicate key errors gracefully.
-- **Whitespace Trimming**: Eliminates accidental spaces before DB insertion.
-- **Empty Input Handling**: Disables submit buttons until forms are valid.
-- **Invalid Input Handling**: Returns `400 Bad Request` with specific error arrays.
-- **User-friendly Validation Messages**: Translates raw server errors into readable toast notifications.
+- Required field validation for student details.
+- Unique Student ID verification.
+- Age and score range validation.
+- Subject and input sanitization (trimming, capitalization).
+- Duplicate record prevention (`E11000` handling).
+- User-friendly validation and error messages.
 
 ---
 
