@@ -28,11 +28,12 @@ Password: admin123
 > The AI service relies on free-tier LLM providers. These providers may restrict requests originating from cloud-hosted environments (such as Render), making the hosted AI demo occasionally unavailable.
 >
 > To evaluate the complete AI functionality, clone the repository, add a valid Groq API key, and run the project locally using the setup instructions below.
----
-###  Demo Video
-Watch the project walkthrough here: [Demo video](https://drive.google.com/file/d/1z3UFJCW018G-ErPTpIBSeZjssaDDI274/view?usp=sharing)
----
+## Demo Video
 
+A short walkthrough demonstrating the application's key features, CRUD operations, and AI assistant.
+
+ **Watch the demo:**  
+https://drive.google.com/file/d/1z3UFJCW018G-ErPTpIBSeZjssaDDI274/view?usp=sharing
 ## Assignment Checklist
 
 - [x] MERN Stack Application
