@@ -2,10 +2,12 @@ import os
 import json
 import logging
 import requests
-from groq import Groq, APIConnectionError
+import google.generativeai as genai
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from prompts import SYSTEM_PROMPT, SUMMARY_PROMPT
 
@@ -18,17 +20,22 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:5001/students")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+# Set up Rate Limiting
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day"],
+    storage_uri="memory://",
+)
 
-if GROQ_API_KEY and GROQ_API_KEY != "your_groq_api_key_here":
-    # Spoof User-Agent to prevent Cloudflare from blocking Render's IP
-    client = Groq(
-        api_key=GROQ_API_KEY, 
-        default_headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"}
-    )
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:5001/students")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if GEMINI_API_KEY and GEMINI_API_KEY != "your_gemini_api_key_here":
+    genai.configure(api_key=GEMINI_API_KEY)
+    model = genai.GenerativeModel('gemini-1.5-flash')
 else:
-    client = None
+    model = None
 
 def clean_json(text):
     text = text.strip()
@@ -41,24 +48,22 @@ def clean_json(text):
     return text.strip()
 
 def generate_natural_response(api_response, intent, user_message=""):
-    """Pass 2: Uses Groq (Llama) to turn the raw API JSON into a beautiful English response."""
+    """Pass 2: Uses Gemini to turn the raw API JSON into a beautiful English response."""
     try:
         prompt = SUMMARY_PROMPT.replace("{api_response}", json.dumps(api_response, indent=2))
         prompt = prompt.replace("{action_intent}", intent)
         prompt = prompt.replace("{user_message}", user_message)
-        res = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return res.choices[0].message.content.strip()
+        res = model.generate_content(prompt)
+        return res.text.strip()
     except Exception as e:
         logger.error(f"Failed to generate natural response: {e}")
         return "✅ Action completed successfully."
 
 @app.route("/chat", methods=["POST"])
+@limiter.limit("10 per 5 minute")
 def chat():
-    if not client:
-        return jsonify({"reply": "⚠️ Please add your Groq API Key in the python-agent/.env file and restart the server.", "action": None})
+    if not model:
+        return jsonify({"reply": "⚠️ Please add your Gemini API Key in the python-agent/.env file and restart the server.", "action": None})
 
     user_message = request.json.get("message", "")
     history = request.json.get("history", [])
@@ -72,12 +77,9 @@ def chat():
         # Pass 1: Intent Extraction
         logger.info(f"Received user message: {user_message}")
         prompt = f"{SYSTEM_PROMPT}\n\nRecent Chat History (for context):\n{history_text}\n\nUser Input: \"{user_message}\""
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}]
-        )
+        response = model.generate_content(prompt)
         
-        raw_text = clean_json(response.choices[0].message.content)
+        raw_text = clean_json(response.text)
         data = json.loads(raw_text)
         
         intent = data.get("intent")
@@ -163,9 +165,6 @@ def chat():
     except requests.exceptions.ConnectionError:
         logger.error("Backend Server is Offline.")
         return jsonify({"reply": "🔌 Error: Backend server is offline! Please ensure Node.js is running.", "action": None})
-    except APIConnectionError as e:
-        logger.error(f"Groq API Connection Error: {e}")
-        return jsonify({"reply": "🌐 Error: Could not connect to Groq AI. If you are on Render, Groq might be temporarily blocking datacenter IPs. If local, check your VPN/Antivirus.", "action": None})
     except Exception as e:
         logger.error(f"Unexpected Error: {e}")
         return jsonify({"reply": f"❌ Unexpected Error: {str(e)}", "action": None})

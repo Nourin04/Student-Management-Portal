@@ -10,7 +10,7 @@
 ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
 ![REST API](https://img.shields.io/badge/REST_API-005571?style=for-the-badge&logo=openapi-initiative&logoColor=white)
 ![AI](https://img.shields.io/badge/AI-FF6F00?style=for-the-badge&logo=openai&logoColor=white)
-![Llama](https://img.shields.io/badge/Llama_3-0466C8?style=for-the-badge&logo=meta&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)
 ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
 ---
@@ -74,7 +74,7 @@ graph TD
 ```mermaid
 graph TD
     A[React Frontend] -->|Chat Message| B[Flask AI Agent]
-    B -->|Prompt| C[Llama Model]
+    B -->|Prompt| C[Gemini Model]
     C -->|Intent & JSON Entities| B
     B -->|REST Calls| D[Express REST API]
     D -->|Mongoose/CRUD| E[(MongoDB Atlas)]
@@ -92,7 +92,7 @@ Separating the backend REST API (Node.js) from the AI Orchestrator (Python Flask
 | **Frontend** | React, CSS3, Lucide React (Icons), React Hot Toast |
 | **Backend** | Node.js, Express.js |
 | **Database** | MongoDB Atlas, Mongoose ODM |
-| **AI Layer** | Python, Flask, Groq API (Llama 3.3) |
+| **AI Layer** | Python, Flask, Google Generative AI (Gemini) |
 | **Deployment** | Render |
 | **Other Libraries**| dotenv, flask-cors, concurrently (Monorepo setup) |
 
@@ -282,22 +282,11 @@ Once the Python backend executes the API call (e.g., POST to Express), it receiv
 
 ---
 
-## 🦙 Why Llama Instead of Gemini
-
-The original project specification requested the integration of Google Gemini. 
-
-However, during the implementation phase, Gemini's free-tier API quotas proved too restrictive for the rigorous, repetitive testing required to refine the two-pass prompt engineering flow. 
-
-To ensure a highly reliable demonstration environment for reviewers, **an open-source Llama 3.3 model (via Groq)** was integrated instead. 
-
-It is crucial to note that **the overall architecture, prompt engineering techniques, intent extraction logic, REST API interactions, and AI workflow remain exactly the same.** Only the underlying API endpoint and API key were swapped.
-
----
-
 ## 🛡️ Error Handling
 
 The application features robust error boundaries at every layer:
 
+- **Rate Limiting:** The AI endpoint is rate-limited (10 requests per 5 minutes) to prevent free-tier quota exhaustion.
 - **Invalid Student ID:** Returns a friendly 404/400 and informs the user.
 - **Duplicate IDs:** MongoDB `E11000` errors are caught by Express and returned as clean `409 Conflict` errors to the UI.
 - **Student Not Found:** The AI gracefully handles empty arrays and informs the user.
@@ -353,7 +342,7 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/school
 
 ### `python-agent/.env`
 ```env
-GROQ_API_KEY=gsk_your_groq_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 API_BASE_URL=http://localhost:5001/students
 ```
 
