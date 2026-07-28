@@ -104,11 +104,7 @@ The platform provides a modern, responsive interface and an intelligent backend 
   </tr>
 </table>
 
-### Student Details
 
-<p align="center">
-  <img src="YOUR_STUDENT_DETAILS_IMAGE_URL" width="700"/>
-</p>
 ---
 
 ## Architecture Overview
