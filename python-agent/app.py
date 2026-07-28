@@ -2,7 +2,7 @@ import os
 import json
 import logging
 import requests
-import google.generativeai as genai
+from openai import OpenAI
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -29,13 +29,19 @@ limiter = Limiter(
 )
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:5001/students")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
-if GEMINI_API_KEY and GEMINI_API_KEY != "your_gemini_api_key_here":
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel('gemini-2.0-flash')
+if OPENROUTER_API_KEY and OPENROUTER_API_KEY != "your_openrouter_api_key_here":
+    client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=OPENROUTER_API_KEY,
+    )
 else:
-    model = None
+    client = None
+
+# Using Llama 3.3 70B via OpenRouter as default (best for JSON extraction)
+# You can change this to "google/gemma-2-9b-it:free" if you prefer Gemma
+MODEL_NAME = "meta-llama/llama-3.3-70b-instruct:free"
 
 def clean_json(text):
     text = text.strip()
@@ -48,13 +54,16 @@ def clean_json(text):
     return text.strip()
 
 def generate_natural_response(api_response, intent, user_message=""):
-    """Pass 2: Uses Gemini to turn the raw API JSON into a beautiful English response."""
+    """Pass 2: Uses OpenRouter to turn the raw API JSON into a beautiful English response."""
     try:
         prompt = SUMMARY_PROMPT.replace("{api_response}", json.dumps(api_response, indent=2))
         prompt = prompt.replace("{action_intent}", intent)
         prompt = prompt.replace("{user_message}", user_message)
-        res = model.generate_content(prompt)
-        return res.text.strip()
+        res = client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return res.choices[0].message.content.strip()
     except Exception as e:
         logger.error(f"Failed to generate natural response: {e}")
         return "✅ Action completed successfully."
@@ -62,8 +71,8 @@ def generate_natural_response(api_response, intent, user_message=""):
 @app.route("/chat", methods=["POST"])
 @limiter.limit("10 per 5 minute")
 def chat():
-    if not model:
-        return jsonify({"reply": "⚠️ Please add your Gemini API Key in the python-agent/.env file and restart the server.", "action": None})
+    if not client:
+        return jsonify({"reply": "⚠️ Please add your OpenRouter API Key in the python-agent/.env file and restart the server.", "action": None})
 
     user_message = request.json.get("message", "")
     history = request.json.get("history", [])
@@ -77,9 +86,12 @@ def chat():
         # Pass 1: Intent Extraction
         logger.info(f"Received user message: {user_message}")
         prompt = f"{SYSTEM_PROMPT}\n\nRecent Chat History (for context):\n{history_text}\n\nUser Input: \"{user_message}\""
-        response = model.generate_content(prompt)
+        response = client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[{"role": "user", "content": prompt}]
+        )
         
-        raw_text = clean_json(response.text)
+        raw_text = clean_json(response.choices[0].message.content)
         data = json.loads(raw_text)
         
         intent = data.get("intent")
@@ -166,8 +178,12 @@ def chat():
         logger.error("Backend Server is Offline.")
         return jsonify({"reply": "🔌 Error: Backend server is offline! Please ensure Node.js is running.", "action": None})
     except Exception as e:
+        error_str = str(e)
+        if "429" in error_str or "Quota exceeded" in error_str:
+            return jsonify({"reply": "⏳ OpenRouter Limit Reached: Please wait a moment and try again!", "action": None})
+        
         logger.error(f"Unexpected Error: {e}")
-        return jsonify({"reply": f"❌ Unexpected Error: {str(e)}", "action": None})
+        return jsonify({"reply": f"❌ Unexpected Error: {error_str}", "action": None})
 
 if __name__ == "__main__":
     logger.info("Starting Python AI Agent API on http://localhost:5002")

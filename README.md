@@ -8,9 +8,8 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
-![REST API](https://img.shields.io/badge/REST_API-005571?style=for-the-badge&logo=openapi-initiative&logoColor=white)
 ![AI](https://img.shields.io/badge/AI-FF6F00?style=for-the-badge&logo=openai&logoColor=white)
-![Gemini](https://img.shields.io/badge/Gemini-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)
+![OpenRouter](https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openai&logoColor=white)
 ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
 ---
@@ -74,7 +73,7 @@ graph TD
 ```mermaid
 graph TD
     A[React Frontend] -->|Chat Message| B[Flask AI Agent]
-    B -->|Prompt| C[Gemini Model]
+    B -->|Prompt| C[OpenRouter Model]
     C -->|Intent & JSON Entities| B
     B -->|REST Calls| D[Express REST API]
     D -->|Mongoose/CRUD| E[(MongoDB Atlas)]
@@ -92,7 +91,7 @@ Separating the backend REST API (Node.js) from the AI Orchestrator (Python Flask
 | **Frontend** | React, CSS3, Lucide React (Icons), React Hot Toast |
 | **Backend** | Node.js, Express.js |
 | **Database** | MongoDB Atlas, Mongoose ODM |
-| **AI Layer** | Python, Flask, Google Generative AI (Gemini) |
+| **AI Layer** | Python, Flask, OpenRouter API (Llama 3.3) |
 | **Deployment** | Render |
 | **Other Libraries**| dotenv, flask-cors, concurrently (Monorepo setup) |
 
@@ -342,7 +341,7 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/school
 
 ### `python-agent/.env`
 ```env
-GEMINI_API_KEY=your_gemini_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
 API_BASE_URL=http://localhost:5001/students
 ```
 
