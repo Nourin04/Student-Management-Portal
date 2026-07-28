@@ -353,11 +353,10 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/school
 ### `python-agent/.env`
 ```env
 GROQ_API_KEY=gsk_your_groq_api_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
-OPENROUTER_API_KEY=your_openrouter_api_key_here
+
 API_BASE_URL=http://localhost:5001/students
 ```
-*(You only need to supply one API key based on your selected LLM provider. The agent defaults to Groq, but supports Gemini and OpenRouter if the Python code is configured).*
+
 
 *(No `.env` is required for the frontend out of the box as it proxies to localhost in development).*
 
