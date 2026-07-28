@@ -18,7 +18,6 @@
 
 The live demo showcases the complete frontend, backend, authentication, and MongoDB integration.
 
-Link: https://student-frontend-ixu5.onrender.com/
 
 ### Demo Credentials
 Username: admin
@@ -48,10 +47,9 @@ Password: admin123
 
 ## Live Demo
 
-- **Frontend Application:** [Deploy URL Here]
-- **Backend API:** [Deploy URL Here]
-- **AI Agent API:** [Deploy URL Here]
-- **GitHub Repository:** [Repository URL Here]
+- **Frontend Application:** https://student-frontend-ixu5.onrender.com/
+- **Backend API:**  https://student-management-portal-53js.onrender.com
+- **AI Agent API:** [[Deploy URL Here]](https://student-ai-agent-5cwh.onrender.com)
 
 The deployed application demonstrates the complete MERN architecture. If the AI assistant is temporarily unavailable due to free-tier provider restrictions, all remaining application features can still be fully evaluated through the live demo.
 
