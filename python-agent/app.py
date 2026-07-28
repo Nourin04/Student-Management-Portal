@@ -22,7 +22,11 @@ API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:5001/students")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 if GROQ_API_KEY and GROQ_API_KEY != "your_groq_api_key_here":
-    client = Groq(api_key=GROQ_API_KEY)
+    # Spoof User-Agent to prevent Cloudflare from blocking Render's IP
+    client = Groq(
+        api_key=GROQ_API_KEY, 
+        default_headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"}
+    )
 else:
     client = None
 
