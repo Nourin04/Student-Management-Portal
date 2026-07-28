@@ -2,7 +2,7 @@ import os
 import json
 import logging
 import requests
-from groq import Groq
+from groq import Groq, APIConnectionError
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -159,6 +159,9 @@ def chat():
     except requests.exceptions.ConnectionError:
         logger.error("Backend Server is Offline.")
         return jsonify({"reply": "🔌 Error: Backend server is offline! Please ensure Node.js is running.", "action": None})
+    except APIConnectionError as e:
+        logger.error(f"Groq API Connection Error: {e}")
+        return jsonify({"reply": "🌐 Error: Could not connect to Groq AI. If you are on Render, Groq might be temporarily blocking datacenter IPs. If local, check your VPN/Antivirus.", "action": None})
     except Exception as e:
         logger.error(f"Unexpected Error: {e}")
         return jsonify({"reply": f"❌ Unexpected Error: {str(e)}", "action": None})
