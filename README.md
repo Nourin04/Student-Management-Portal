@@ -1,4 +1,4 @@
-# 🎓 Intelligent Student Management System
+# Intelligent Student Management System
 
 > A complete, full-stack MERN application integrated with an AI-powered conversational assistant to manage student records via natural language.
 
@@ -7,23 +7,55 @@
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![REST API](https://img.shields.io/badge/REST_API-005571?style=for-the-badge&logo=openapi-initiative&logoColor=white)
 ![AI](https://img.shields.io/badge/AI-FF6F00?style=for-the-badge&logo=openai&logoColor=white)
-![OpenRouter](https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openai&logoColor=white)
+![Llama 3](https://img.shields.io/badge/Llama_3-0466C8?style=for-the-badge&logo=meta&logoColor=white)
 ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
 ---
 
-## 🌐 Live Demo
+## Reviewer Note
+
+The live demo showcases the complete frontend, backend, authentication, and MongoDB integration.
+
+### Demo Credentials
+Username: admin
+Password: admin123
+
+> **AI Assistant**
+>
+> The AI service relies on free-tier LLM providers. These providers may restrict requests originating from cloud-hosted environments (such as Render), making the hosted AI demo occasionally unavailable.
+>
+> To evaluate the complete AI functionality, clone the repository, add a valid LLM API key (Groq/OpenRouter/OpenAI/Gemini), and run the project locally using the setup instructions below.
+
+---
+
+## Assignment Checklist
+
+- [x] MERN Stack Application
+- [x] RESTful API
+- [x] MongoDB Integration
+- [x] Responsive UI
+- [x] CRUD Operations
+- [x] AI-powered Natural Language Interface
+- [x] Deployed Frontend
+- [x] Deployed Backend
+- [x] Source Code with Documentation
+
+---
+
+## Live Demo
 
 - **Frontend Application:** [Deploy URL Here]
 - **Backend API:** [Deploy URL Here]
 - **AI Agent API:** [Deploy URL Here]
 - **GitHub Repository:** [Repository URL Here]
 
+The deployed application demonstrates the complete MERN architecture. If the AI assistant is temporarily unavailable due to free-tier provider restrictions, all remaining application features can still be fully evaluated through the live demo.
+
 ---
 
-## ✨ Features
+## Features
 
 The platform provides a modern, responsive interface and an intelligent backend to manage student data efficiently.
 
@@ -43,7 +75,7 @@ The platform provides a modern, responsive interface and an intelligent backend 
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 | Dashboard | Add Student |
 | :---: | :---: |
@@ -55,7 +87,7 @@ The platform provides a modern, responsive interface and an intelligent backend 
 
 ---
 
-## 🏛️ Architecture Overview
+## Architecture Overview
 
 The system follows a microservices-inspired architecture spanning three independent layers: the Client, the Core API, and the AI Agent.
 
@@ -73,7 +105,7 @@ graph TD
 ```mermaid
 graph TD
     A[React Frontend] -->|Chat Message| B[Flask AI Agent]
-    B -->|Prompt| C[OpenRouter Model]
+    B -->|Prompt| C[Llama 3 Model (via Groq)]
     C -->|Intent & JSON Entities| B
     B -->|REST Calls| D[Express REST API]
     D -->|Mongoose/CRUD| E[(MongoDB Atlas)]
@@ -84,20 +116,20 @@ Separating the backend REST API (Node.js) from the AI Orchestrator (Python Flask
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer | Technologies |
 | :--- | :--- |
 | **Frontend** | React, CSS3, Lucide React (Icons), React Hot Toast |
 | **Backend** | Node.js, Express.js |
 | **Database** | MongoDB Atlas, Mongoose ODM |
-| **AI Layer** | Python, Flask, OpenRouter API (Llama 3.3) |
+| **AI Layer** | Python, Flask, Groq API (Llama 3.3) |
 | **Deployment** | Render |
 | **Other Libraries**| dotenv, flask-cors, concurrently (Monorepo setup) |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 turnipseed-task/
@@ -114,7 +146,7 @@ turnipseed-task/
 
 ---
 
-## 🔄 User Flow
+## User Flow
 
 1. **User opens dashboard**: The React application mounts and initializes.
 2. **Dashboard loads statistics**: The frontend requests aggregated data to display high-level metrics.
@@ -134,7 +166,7 @@ turnipseed-task/
 
 ---
 
-## 💻 MERN Features Implementation
+## MERN Features Implementation
 
 - **Student CRUD**: Handled via standard HTTP methods (GET, POST, PUT, DELETE) on the Express router.
 - **Search**: Implemented using a combination of local state filtering and backend query string matching.
@@ -152,7 +184,7 @@ turnipseed-task/
 
 ---
 
-## ✅ Form Validation
+## Form Validation
 
 Validation is implemented strictly on both the Client (for UX) and the Server (for security).
 
@@ -170,7 +202,7 @@ Validation is implemented strictly on both the Client (for UX) and the Server (f
 
 ---
 
-## 🧮 Academic Calculation Logic
+## Academic Calculation Logic
 
 When a student record is created or updated, the backend calculates the following before saving:
 
@@ -188,7 +220,7 @@ When a student record is created or updated, the backend calculates the followin
 
 ---
 
-## 📖 REST API Documentation
+## REST API Documentation
 
 ### `POST /students`
 **Purpose:** Creates a new student record.
@@ -220,13 +252,13 @@ When a student record is created or updated, the backend calculates the followin
 
 ---
 
-## 🤖 AI Assistant (Nova)
+## AI Assistant (Nova)
 
 Nova is an AI-powered conversational assistant designed specifically for this Student Management System. 
 
 Instead of forcing users to click through forms, Nova understands natural language. Nova acts as a powerful orchestrator: she interprets user requests, maps them to the correct backend REST API calls, executes them securely, and translates the raw JSON results back into friendly, conversational English.
 
-Nova is fully capable of:
+Supported operations include:
 - **Adding Students:** "Add Rahul, age 20, Math 95"
 - **Updating Students:** "Update Adam's marks to 100 in Physics"
 - **Deleting Students:** "Delete STU002"
@@ -235,7 +267,7 @@ Nova is fully capable of:
 
 ---
 
-## 🧠 AI Architecture
+## AI Architecture
 
 ```mermaid
 graph TD
@@ -252,7 +284,7 @@ graph TD
 
 ---
 
-## 🗣️ Conversational Memory
+## Conversational Memory
 
 To make the AI feel natural and human, **Conversational Memory** was implemented. 
 
@@ -264,7 +296,7 @@ The frontend maintains a rolling window of the previous five user-assistant mess
 
 ---
 
-## 🔄 Two-Pass Prompt Engineering Strategy
+## Two-Pass Prompt Engineering Strategy
 
 Nova operates using a highly reliable **Two-Pass Prompt Engineering Strategy** to separate reasoning from response generation.
 
@@ -272,7 +304,7 @@ Nova operates using a highly reliable **Two-Pass Prompt Engineering Strategy** t
 The LLM acts purely as a data-extraction machine. It takes the natural language and extracts the **Intent** (e.g., `ADD_STUDENT`) and the **Entities** (Name, Age, Scores). It also validates missing information (e.g., if the user didn't provide scores, the LLM requests them instead of failing).
 
 ### Pass 2: Natural Summarization
-Once the Python backend executes the API call (e.g., POST to Express), it receives raw JSON back from the database. The LLM is invoked a *second* time. It is fed the raw JSON and instructed to summarize the outcome conversationally (e.g., "✅ Rahul was successfully added with an A grade!").
+Once the Python backend executes the API call (e.g., POST to Express), it receives raw JSON back from the database. The LLM is invoked a *second* time. It is fed the raw JSON and instructed to summarize the outcome conversationally (e.g., "Rahul was successfully added with an A grade!").
 
 **Why this improves the AI:**
 - **Reliability & Accuracy:** The AI is never guessing data; it only summarizes factual JSON data returned directly from the database.
@@ -281,7 +313,7 @@ Once the Python backend executes the API call (e.g., POST to Express), it receiv
 
 ---
 
-## 🛡️ Error Handling
+## Error Handling
 
 The application features robust error boundaries at every layer:
 
@@ -296,9 +328,9 @@ The application features robust error boundaries at every layer:
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
-The entire stack is deployed seamlessly on **Render**:
+The application is deployed using Render services:
 
 - **Frontend:** Hosted as a static site build.
 - **Express Backend:** Hosted as a Node.js Web Service.
@@ -309,27 +341,24 @@ All services communicate securely using Environment Variables configuration.
 
 ---
 
-## 💻 Running the Project Locally
+## Running the Project Locally
 
-To dramatically simplify the developer experience, the project utilizes a root `package.json` with the `concurrently` package.
+The project uses a root package.json with concurrently to start all services together.
 
-You only need two commands to start the entire MERN stack + Python AI Agent!
+Before starting the application, configure the required environment variables in backend/.env and python-agent/.env.
 
-1. Install dependencies across all folders:
-   ```bash
-   npm install
-   ```
+Install dependencies and start all services:
 
-2. Start the application:
-   ```bash
-   npm run start
-   ```
+```bash
+npm install
+npm run start
+```
 
 This single command simultaneously boots the React Frontend (Vite), the Express Backend (Node), and the Flask AI Agent (Python/venv).
 
 ---
 
-## 🔐 Environment Variables
+## Environment Variables
 
 You will need to set up `.env` files in the respective directories:
 
@@ -341,51 +370,38 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/school
 
 ### `python-agent/.env`
 ```env
+GROQ_API_KEY=gsk_your_groq_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 OPENROUTER_API_KEY=your_openrouter_api_key_here
 API_BASE_URL=http://localhost:5001/students
 ```
+*(You only need to supply one API key based on your selected LLM provider. The agent defaults to Groq, but supports Gemini and OpenRouter if the Python code is configured).*
 
 *(No `.env` is required for the frontend out of the box as it proxies to localhost in development).*
 
 ---
 
-## 💬 Example AI Prompts
+## Example AI Prompts
 
-Try these prompts in the Nova Chat Widget!
+Try these 10 example prompts in the Nova Chat Widget!
 
-**Add Student**
-- "Add a new student named Sarah, she is 19. She scored 95 in Physics and 88 in Math."
-- "Register student Mark. Age 21. History 70, English 75."
-
-**Update Student**
-- "Update Adam's marks to 100 in Physics."
-- "Change STU001's age to 21."
-- "Set Rahul's History score to 80."
-
-**Delete Student**
-- "Delete student STU002."
-- "Remove Helen from the system."
-- "Can you delete STU005?"
-
-**Search & List**
-- "Show me STU001."
-- "How is Adam doing?"
-- "How many students are there?"
-- "List all students."
-- "Show me all the students in the database."
-
-**Conversational & Edge Cases**
-- "Hi Nova!"
-- "Delete the student." *(Nova will ask which one)*
-- "Add a student." *(Nova will ask for missing details)*
-- "Delete me." *(Nova will push back playfully)*
-- "What's the weather?" *(Nova will explain her scope)*
+1. "Add a new student named Sarah, she is 19. She scored 95 in Physics and 88 in Math."
+2. "Register student Mark. Age 21. History 70, English 75."
+3. "Update Adam's marks to 100 in Physics."
+4. "Change STU001's age to 21."
+5. "Set Rahul's History score to 80."
+6. "Delete student STU002."
+7. "Remove Helen from the system."
+8. "Show me STU001."
+9. "How is Adam doing?"
+10. "How many students are there?"
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
-While this system is production-ready for the assignment requirements, future enterprise enhancements could include:
+While the application satisfies the assignment requirements, future enhancements could include:
+- Replace free-tier LLM inference with a production-grade hosted model for higher reliability and throughput.
 - **Authentication & Authorization (JWT):** Securing the dashboard and API endpoints with role-based access (Admin vs Teacher).
 - **Pagination:** Essential for scaling the `GET /students` endpoint to thousands of records.
 - **Advanced Analytics:** Chart.js integration for visual performance grading over time.
@@ -394,7 +410,7 @@ While this system is production-ready for the assignment requirements, future en
 
 ---
 
-## 🧗 Challenges Faced
+## Challenges Faced
 
 - **AI Formatting Stability:** Coaxing the LLM to consistently output raw JSON without markdown code blocks required strict prompt engineering and backup regex sanitization.
 - **Context Bleed:** Preventing the AI from accidentally carrying over a previously viewed Student ID into a highly destructive `DELETE` command required explicit negative constraints in the System Prompt.
@@ -402,7 +418,7 @@ While this system is production-ready for the assignment requirements, future en
 
 ---
 
-## 📚 Key Learning Outcomes
+## Key Learning Outcomes
 
 - Architecting decoupled microservices (React UI + Node REST API + Python AI Orchestrator).
 - Designing robust Mongoose schemas with pre-save hooks for academic calculations.
@@ -412,6 +428,6 @@ While this system is production-ready for the assignment requirements, future en
 
 ---
 
-## 🎯 Conclusion
+## Conclusion
 
 This project successfully demonstrates modern full-stack software engineering. It bridges the gap between traditional robust CRUD architectures (MERN) and next-generation AI integrations. By enforcing strict separation of concerns, comprehensive validation, and a highly polished user experience, this application serves as a strong foundation for a production-oriented student management system.

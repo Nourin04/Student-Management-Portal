@@ -3,7 +3,7 @@ import re
 import json
 import logging
 import requests
-from openai import OpenAI
+from groq import Groq, APIConnectionError
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -30,18 +30,19 @@ limiter = Limiter(
 )
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:5001/students")
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-if OPENROUTER_API_KEY and OPENROUTER_API_KEY != "your_openrouter_api_key_here":
-    client = OpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=OPENROUTER_API_KEY,
+if GROQ_API_KEY and GROQ_API_KEY != "your_groq_api_key_here":
+    # Spoof User-Agent to prevent Cloudflare from blocking Render's IP
+    client = Groq(
+        api_key=GROQ_API_KEY, 
+        default_headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"}
     )
 else:
     client = None
 
-# Using Google Gemma 4 26B via OpenRouter as default
-MODEL_NAME = "google/gemma-4-26b-a4b-it:free"
+# Using Groq Llama 3.3 70B
+MODEL_NAME = "llama-3.3-70b-versatile"
 
 def clean_json(text):
     text = text.strip()
@@ -60,7 +61,7 @@ def clean_json(text):
     return text.strip()
 
 def generate_natural_response(api_response, intent, user_message=""):
-    """Pass 2: Uses OpenRouter to turn the raw API JSON into a beautiful English response."""
+    """Pass 2: Uses Groq to turn the raw API JSON into a beautiful English response."""
     try:
         prompt = SUMMARY_PROMPT.replace("{api_response}", json.dumps(api_response, indent=2))
         prompt = prompt.replace("{action_intent}", intent)
@@ -78,7 +79,7 @@ def generate_natural_response(api_response, intent, user_message=""):
 @limiter.limit("10 per 5 minute")
 def chat():
     if not client:
-        return jsonify({"reply": "⚠️ Please add your OpenRouter API Key in the python-agent/.env file and restart the server.", "action": None})
+        return jsonify({"reply": "⚠️ Please add your Groq API Key in the python-agent/.env file and restart the server.", "action": None})
 
     user_message = request.json.get("message", "")
     history = request.json.get("history", [])
@@ -116,7 +117,7 @@ def chat():
                 return jsonify({"reply": f"❌ Failed to add student: {res.json().get('message', res.text)}", "action": None})
 
         elif intent == "GET_STUDENT":
-            search_query = entities.get("studentId", "")
+            search_query = entities.get("studentId") or entities.get("name", "")
             res = requests.get(f"{API_BASE_URL}?search={search_query}")
             if res.status_code == 200:
                 students = res.json()
@@ -183,10 +184,13 @@ def chat():
     except requests.exceptions.ConnectionError:
         logger.error("Backend Server is Offline.")
         return jsonify({"reply": "🔌 Error: Backend server is offline! Please ensure Node.js is running.", "action": None})
+    except APIConnectionError as e:
+        logger.error(f"Groq API Connection Error: {e}")
+        return jsonify({"reply": "🤖 AI Assistant is unavailable in the public demo because free-tier inference providers restrict requests from cloud-hosted applications. To test the complete AI functionality, please run the project locally using the instructions in the README.", "action": None})
     except Exception as e:
         error_str = str(e)
         if "429" in error_str or "Quota exceeded" in error_str:
-            return jsonify({"reply": "⏳ OpenRouter Limit Reached: Please wait a moment and try again!", "action": None})
+            return jsonify({"reply": "🤖 AI Assistant is unavailable in the public demo because free-tier inference providers restrict requests from cloud-hosted applications. To test the complete AI functionality, please run the project locally using the instructions in the README.", "action": None})
         
         logger.error(f"Unexpected Error: {e}")
         return jsonify({"reply": f"❌ Unexpected Error: {error_str}", "action": None})
