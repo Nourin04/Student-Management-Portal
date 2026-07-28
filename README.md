@@ -29,8 +29,7 @@ Password: admin123
 >
 > To evaluate the complete AI functionality, clone the repository, add a valid Groq API key, and run the project locally using the setup instructions below.
 ---
-### 🎥 Demo Video
-
+###  Demo Video
 Watch the project walkthrough here: [Demo video](https://drive.google.com/file/d/1z3UFJCW018G-ErPTpIBSeZjssaDDI274/view?usp=sharing)
 ---
 
