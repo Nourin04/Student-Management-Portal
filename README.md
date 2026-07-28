@@ -105,7 +105,7 @@ graph TD
 ```mermaid
 graph TD
     A[React Frontend] -->|Chat Message| B[Flask AI Agent]
-    B -->|Prompt| C[Llama 3 Model (via Groq)]
+    B -->|Prompt| C["Llama 3 Model (via Groq)"]
     C -->|Intent & JSON Entities| B
     B -->|REST Calls| D[Express REST API]
     D -->|Mongoose/CRUD| E[(MongoDB Atlas)]
