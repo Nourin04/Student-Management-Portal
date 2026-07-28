@@ -1,24 +1,24 @@
 import os
 import json
 import requests
-import google.generativeai as genai
+from groq import Groq
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:5001/students")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-if not GEMINI_API_KEY or GEMINI_API_KEY == "your_gemini_api_key_here":
-    print("❌ ERROR: Please set your GEMINI_API_KEY in the python-agent/.env file.")
+if not GROQ_API_KEY or GROQ_API_KEY == "your_groq_api_key_here":
+    print("❌ ERROR: Please set your GROQ_API_KEY in the python-agent/.env file.")
     exit(1)
 
-# Configure Gemini AI
-genai.configure(api_key=GEMINI_API_KEY)
+# Configure Groq AI
+client = Groq(api_key=GROQ_API_KEY)
 
 # Use the latest model
-model = genai.GenerativeModel('gemini-2.5-pro')
+model = "llama-3.3-70b-versatile"
 
 SYSTEM_PROMPT = """
 You are an intelligent assistant for a Student Management System.
@@ -61,10 +61,10 @@ Format for UNKNOWN:
 }
 """
 
-def process_intent(gemini_response_json):
-    """Executes the REST API calls based on Gemini's parsed intent."""
+def process_intent(llm_response_json):
+    """Executes the REST API calls based on the parsed intent."""
     try:
-        data = json.loads(gemini_response_json.strip())
+        data = json.loads(llm_response_json.strip())
         intent = data.get("intent")
         entities = data.get("entities", {})
 
@@ -141,12 +141,15 @@ def run_chat():
             continue
 
         try:
-            # Ask Gemini to parse the input
+            # Ask Groq to parse the input
             prompt = f"{SYSTEM_PROMPT}\n\nUser Input: \"{user_input}\""
-            response = model.generate_content(prompt)
+            response = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}]
+            )
             
-            raw_text = response.text
-            # Sometimes Gemini still wraps in markdown despite instructions, let's clean it
+            raw_text = response.choices[0].message.content
+            # Sometimes the model still wraps in markdown despite instructions, let's clean it
             if raw_text.startswith("```json"):
                 raw_text = raw_text.replace("```json", "", 1).replace("```", "", 1)
             elif raw_text.startswith("```"):

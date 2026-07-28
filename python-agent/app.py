@@ -2,7 +2,7 @@ import os
 import json
 import logging
 import requests
-import google.generativeai as genai
+from groq import Groq
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -19,14 +19,12 @@ app = Flask(__name__)
 CORS(app)
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:5001/students")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-if GEMINI_API_KEY and GEMINI_API_KEY != "your_gemini_api_key_here":
-    genai.configure(api_key=GEMINI_API_KEY)
-    # Switched to the faster, cheaper model as requested
-    model = genai.GenerativeModel('gemini-2.0-flash')
+if GROQ_API_KEY and GROQ_API_KEY != "your_groq_api_key_here":
+    client = Groq(api_key=GROQ_API_KEY)
 else:
-    model = None
+    client = None
 
 def clean_json(text):
     text = text.strip()
@@ -38,21 +36,25 @@ def clean_json(text):
         text = text[:-3]
     return text.strip()
 
-def generate_natural_response(api_response, intent):
-    """Pass 2: Uses Gemini to turn the raw API JSON into a beautiful English response."""
+def generate_natural_response(api_response, intent, user_message=""):
+    """Pass 2: Uses Groq (Llama) to turn the raw API JSON into a beautiful English response."""
     try:
         prompt = SUMMARY_PROMPT.replace("{api_response}", json.dumps(api_response, indent=2))
         prompt = prompt.replace("{action_intent}", intent)
-        res = model.generate_content(prompt)
-        return res.text.strip()
+        prompt = prompt.replace("{user_message}", user_message)
+        res = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return res.choices[0].message.content.strip()
     except Exception as e:
         logger.error(f"Failed to generate natural response: {e}")
         return "✅ Action completed successfully."
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    if not model:
-        return jsonify({"reply": "⚠️ Please add your Gemini API Key in the python-agent/.env file and restart the server.", "action": None})
+    if not client:
+        return jsonify({"reply": "⚠️ Please add your Groq API Key in the python-agent/.env file and restart the server.", "action": None})
 
     user_message = request.json.get("message", "")
     history = request.json.get("history", [])
@@ -66,9 +68,12 @@ def chat():
         # Pass 1: Intent Extraction
         logger.info(f"Received user message: {user_message}")
         prompt = f"{SYSTEM_PROMPT}\n\nRecent Chat History (for context):\n{history_text}\n\nUser Input: \"{user_message}\""
-        response = model.generate_content(prompt)
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}]
+        )
         
-        raw_text = clean_json(response.text)
+        raw_text = clean_json(response.choices[0].message.content)
         data = json.loads(raw_text)
         
         intent = data.get("intent")
@@ -81,7 +86,7 @@ def chat():
             res = requests.post(API_BASE_URL, json=entities)
             if res.status_code == 201:
                 student = res.json()
-                reply = generate_natural_response(student, intent)
+                reply = generate_natural_response(student, intent, user_message)
                 return jsonify({"reply": reply, "action": {"type": "REFRESH_TABLE"}})
             else:
                 return jsonify({"reply": f"❌ Failed to add student: {res.json().get('message', res.text)}", "action": None})
@@ -93,7 +98,7 @@ def chat():
                 students = res.json()
                 if len(students) > 0:
                     student = students[0]
-                    reply = generate_natural_response(student, intent)
+                    reply = generate_natural_response(student, intent, user_message)
                     return jsonify({"reply": reply, "action": {"type": "HIGHLIGHT_ROW", "id": student['studentId']}})
                 else:
                     return jsonify({"reply": f"⚠️ Could not find any student matching '{search_query}'.", "action": None})
@@ -114,7 +119,7 @@ def chat():
                 # Make the PUT request
                 res = requests.put(f"{API_BASE_URL}/{student_id}", json=update_data)
                 if res.status_code == 200:
-                    reply = generate_natural_response(res.json(), intent)
+                    reply = generate_natural_response(res.json(), intent, user_message)
                     return jsonify({"reply": reply, "action": {"type": "REFRESH_TABLE"}})
                 else:
                     return jsonify({"reply": f"❌ Update failed: {res.text}", "action": None})
@@ -128,10 +133,10 @@ def chat():
                 student_id = search_res.json()[0]['studentId']
                 res = requests.delete(f"{API_BASE_URL}/{student_id}")
                 if res.status_code == 200:
-                    # Pass the deleted student data to Gemini so it knows who was deleted
+                    # Pass the deleted student data to Groq so it knows who was deleted
                     deleted_data = search_res.json()[0]
                     deleted_data['status_message'] = "Successfully deleted"
-                    reply = generate_natural_response(deleted_data, intent)
+                    reply = generate_natural_response(deleted_data, intent, user_message)
                     return jsonify({"reply": reply, "action": {"type": "REFRESH_TABLE"}})
             
             return jsonify({"reply": f"⚠️ Could not find a student matching '{search_query}' to delete.", "action": None})
@@ -139,19 +144,11 @@ def chat():
         elif intent == "GET_ALL_STUDENTS":
             res = requests.get(API_BASE_URL)
             if res.status_code == 200:
-                reply = generate_natural_response({"all_students": res.json()}, intent)
+                reply = generate_natural_response({"all_students": res.json()}, intent, user_message)
                 return jsonify({"reply": reply, "action": None})
 
-        elif intent == "HELP":
-            reply = (
-                "Hi! I am Nova, your Intelligent Assistant. Here is what I can do for you:\n\n"
-                "✓ **Add students** (e.g., 'Add Rahul, age 20, Math 95')\n"
-                "✓ **Find students** (e.g., 'Show me STU001')\n"
-                "✓ **Update students** (e.g., 'Update Adam's marks to 100 in Physics')\n"
-                "✓ **Delete students** (e.g., 'Delete STU002')\n"
-                "✓ **List all students** (e.g., 'Show all students')\n\n"
-                "Just type what you need!"
-            )
+        elif intent == "DIRECT_REPLY":
+            reply = data.get("reply", "I'm not sure how to respond to that.")
             return jsonify({"reply": reply, "action": None})
 
         return jsonify({"reply": "❌ Unsupported action.", "action": None})
