@@ -17,6 +17,7 @@
 ## Reviewer Note
 
 The live demo showcases the complete frontend, backend, authentication, and MongoDB integration.
+Link: https://student-frontend-ixu5.onrender.com/
 
 ### Demo Credentials
 Username: admin
@@ -26,7 +27,7 @@ Password: admin123
 >
 > The AI service relies on free-tier LLM providers. These providers may restrict requests originating from cloud-hosted environments (such as Render), making the hosted AI demo occasionally unavailable.
 >
-> To evaluate the complete AI functionality, clone the repository, add a valid LLM API key (Groq/OpenRouter/OpenAI/Gemini), and run the project locally using the setup instructions below.
+> To evaluate the complete AI functionality, clone the repository, add a valid Groq API key, and run the project locally using the setup instructions below.
 
 ---
 
