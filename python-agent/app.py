@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import logging
 import requests
@@ -44,6 +45,12 @@ MODEL_NAME = "google/gemma-4-26b-a4b-it:free"
 
 def clean_json(text):
     text = text.strip()
+    # Find the first { and the last } to aggressively extract JSON
+    match = re.search(r'\{.*\}', text, re.DOTALL)
+    if match:
+        return match.group(0)
+    
+    # Fallback to old cleaning if no braces found
     if text.startswith("```json"):
         text = text.replace("```json", "", 1)
     if text.startswith("```"):
