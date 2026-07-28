@@ -39,8 +39,8 @@ if OPENROUTER_API_KEY and OPENROUTER_API_KEY != "your_openrouter_api_key_here":
 else:
     client = None
 
-# Using Google Gemma 2 9B via OpenRouter as default
-MODEL_NAME = "google/gemma-2-9b-it:free"
+# Using Google Gemma 4 26B via OpenRouter as default
+MODEL_NAME = "google/gemma-4-26b-a4b-it:free"
 
 def clean_json(text):
     text = text.strip()
