@@ -49,7 +49,7 @@ Password: admin123
 
 - **Frontend Application:** https://student-frontend-ixu5.onrender.com/
 - **Backend API:**  https://student-management-portal-53js.onrender.com
-- **AI Agent API:** [[Deploy URL Here]](https://student-ai-agent-5cwh.onrender.com)
+- **AI Agent API:**  https://student-ai-agent-5cwh.onrender.com
 
 The deployed application demonstrates the complete MERN architecture. If the AI assistant is temporarily unavailable due to free-tier provider restrictions, all remaining application features can still be fully evaluated through the live demo.
 
