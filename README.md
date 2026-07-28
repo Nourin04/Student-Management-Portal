@@ -79,9 +79,13 @@ The platform provides a modern, responsive interface and an intelligent backend 
 
 | Dashboard | Add Student |
 | :---: | :---: |
-| *(Placeholder: Dashboard Screenshot)* | *(Placeholder: Add Student Screenshot)* |
+| <img width="1314" height="726" alt="Screenshot 2026-07-28 at 3 27 43 PM" src="https://github.com/user-attachments/assets/ef6bfd3a-4a6a-4074-82b8-9c581c9b2e7f" />
+ | <img width="1358" height="730" alt="Screenshot 2026-07-28 at 3 24 03 PM" src="https://github.com/user-attachments/assets/a1099f6c-8fbc-4158-8880-64365dc836bd" />
+ |
 | **Edit Student** | **AI Assistant** |
-| *(Placeholder: Edit Student Screenshot)* | *(Placeholder: AI Assistant Screenshot)* |
+| <img width="1374" height="720" alt="Screenshot 2026-07-28 at 3 27 17 PM" src="https://github.com/user-attachments/assets/c19f5cdd-667d-4fdf-b5b2-f319975ba493" />
+ | <img width="1328" height="727" alt="Screenshot 2026-07-28 at 3 26 33 PM" src="https://github.com/user-attachments/assets/36dad116-4aa0-40be-bdef-2666343090b1" />
+|
 
 *(Placeholder: Student Details Modal Screenshot)*
 
